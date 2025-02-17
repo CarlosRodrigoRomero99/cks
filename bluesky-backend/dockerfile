@@ -4,6 +4,21 @@ FROM php:8.2-fpm
 # Set working directory
 WORKDIR /var/www/html
 
+# Image config
+ENV SKIP_COMPOSER 1
+ENV WEBROOT /var/www/html/public
+ENV PHP_ERRORS_STDERR 1
+ENV RUN_SCRIPTS 1
+ENV REAL_IP_HEADER 1
+
+# Laravel config
+ENV APP_ENV production
+ENV APP_DEBUG false
+ENV LOG_CHANNEL stderr
+
+# Allow composer to run as root
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     curl zip unzip git \
@@ -14,9 +29,6 @@ RUN apt-get update && apt-get install -y \
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Copy composer.json and composer.lock files
-COPY composer.json composer.lock ./
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts
