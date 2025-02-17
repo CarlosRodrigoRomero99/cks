@@ -27,14 +27,12 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy composer.json file
-COPY composer.json ./
+# Copy existing application directory contents
+COPY . .
+
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts
-
-# Copy existing application directory contents
-COPY . .
 
 # Ensure storage and cache directories exist
 RUN mkdir -p storage bootstrap/cache \
