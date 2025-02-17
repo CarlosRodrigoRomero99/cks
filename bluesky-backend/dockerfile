@@ -4,12 +4,13 @@ FROM php:8.2-fpm
 # Set working directory
 WORKDIR /var/www/html
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     curl zip unzip git \
     libpng-dev libjpeg-dev libfreetype6-dev \
+    libonig-dev libxml2-dev \
     && docker-php-ext-configure gd \
-    && docker-php-ext-install gd pdo pdo_mysql
+    && docker-php-ext-install gd pdo pdo_mysql mbstring xml
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -17,11 +18,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy existing application directory contents
 COPY . .
 
+# Set correct permissions
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
 # Expose port 8000
 EXPOSE 8000
 
-# Run Laravel server
+# Start Laravel Server
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
