@@ -1,0 +1,17 @@
+services:
+  - name: laravel-backend
+    type: web
+    env: docker
+    plan: free
+    repo: https://github.com/your-username/backend
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_KEY
+        sync: false
+      - key: APP_DEBUG
+        value: false
+      - key: DB_CONNECTION
+        value: sqlite
