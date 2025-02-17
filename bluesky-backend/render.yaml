@@ -3,7 +3,7 @@ services:
     type: web
     env: docker
     plan: free
-    repo: https://github.com/your-username/backend
+    repo: https://github.com/CarlosRodrigoRomer99/cks
     region: oregon
     dockerfilePath: ./Dockerfile
     envVars:

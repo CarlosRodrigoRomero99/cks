@@ -15,6 +15,12 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Copy composer.json and composer.lock files
+COPY composer.json composer.lock ./
+
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts
+
 # Copy existing application directory contents
 COPY . .
 
@@ -22,9 +28,6 @@ COPY . .
 RUN mkdir -p storage bootstrap/cache \
     && chmod -R 777 storage bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
-
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
 
 # Expose port 8000
 EXPOSE 8000
